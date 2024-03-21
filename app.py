@@ -17,9 +17,13 @@ def hello_world():  # put application's code here
 def roll_dice():
     player = request.args.get('player', default=None, type=str)
     result = str(roll())
+    print('시작')
+    logger.info('시자악합니다')
     if player:
+        print('성공!!!!')
         logger.warning("%s is rolling the dice: %s", player, result)
     else:
+        print('실패!!!!')
         logger.warning("Anonymous player is rolling the dice: %s", result)
     return result
 
