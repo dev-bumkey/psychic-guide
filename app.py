@@ -1,16 +1,27 @@
 from random import randint
 from flask import Flask, request
+from logging.handlers import RotatingFileHandler
 import logging
 
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-@app.route('/')
-def hello_world():  # put application's code here
-    app.logger.info('Hello World!')
-    return 'Hello World!'
+# 로그 핸들러 설정
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+file_handler = RotatingFileHandler('app.log', maxBytes=1024 * 1024 * 100, backupCount=20)
+file_handler.setLevel(logging.DEBUG)
+file_handler.setFormatter(formatter)
+app.logger.addHandler(file_handler)
 
+# 예제 라우트
+@app.route('/')
+def index():
+    app.logger.debug('This is a DEBUG message')
+    app.logger.info('This is an INFO message')
+    app.logger.warning('This is a WARNING message')
+    app.logger.error('This is an ERROR message')
+    return 'Check the logs!'
 
 
 
