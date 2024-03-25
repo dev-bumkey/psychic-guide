@@ -1,3 +1,4 @@
+import sys
 from random import randint
 from flask import Flask, request
 from logging.handlers import RotatingFileHandler
@@ -14,7 +15,10 @@ file_handler.setLevel(logging.DEBUG)
 file_handler.setFormatter(formatter)
 app.logger.addHandler(file_handler)
 
-console_handler = logging.StreamHandler()
+# 콘솔 핸들러
+console_handler = logging.StreamHandler(sys.stdout)
+console_handler.setLevel(logging.DEBUG)
+console_handler.setFormatter(formatter)
 app.logger.addHandler(console_handler)
 
 # 예제 라우트
