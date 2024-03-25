@@ -9,10 +9,14 @@ logger = logging.getLogger(__name__)
 
 # 로그 핸들러 설정
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-file_handler = RotatingFileHandler('app.log', maxBytes=1024 * 1024 * 100, backupCount=20)
+file_handler = RotatingFileHandler('/var/log/app.log', maxBytes=1024 * 1024 * 100, backupCount=20)
 file_handler.setLevel(logging.DEBUG)
 file_handler.setFormatter(formatter)
 app.logger.addHandler(file_handler)
+
+
+streamingHandler = logging.StreamHandler()
+streamingHandler.setFormatter(formatter)
 
 # 예제 라우트
 @app.route('/')
