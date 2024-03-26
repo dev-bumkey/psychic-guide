@@ -37,7 +37,7 @@ def index():
         # 루프 스레드가 없거나 종료되었을 때에만 새로운 스레드 시작
         loop_thread = threading.Thread(target=loop_function)
         loop_thread.start()
-    logger.warning('--- PYTHON APPLICATION START ---')
+    logger.info('--- PYTHON APPLICATION START ---')
     logger.debug('This logging App for Log Service')
     return "Loop started"
 
@@ -48,8 +48,8 @@ def loop_function():
     logging_interval_minutes = int(os.getenv('LOGGING_INTERVAL_SECOND', randomSec))
 
     while keep_running:
-        app.logger.info('Logging interval set to %d seconds', logging_interval_minutes)
-        app.logger.info('Waiting for %d second(s) before logging again...', logging_interval_minutes)
+        app.logger.error('Logging interval set to %d seconds', logging_interval_minutes)
+        app.logger.warning('Waiting for %d second(s) before logging again...', logging_interval_minutes)
         time.sleep(logging_interval_minutes)
         randomSec = randint(1, 10)
         logging_interval_minutes = int(os.getenv('LOGGING_INTERVAL_SECOND', randomSec))
