@@ -35,7 +35,7 @@ def index():
     randomSec = randint(5, 30)
     logging_interval_minutes = int(os.getenv('LOGGING_INTERVAL_SECOND', randomSec))
 
-    while randomSec < 60:
+    while randomSec < 30:
         # 환경 변수에서 로깅 간격(초)을 읽기
 
         app.logger.info('Logging interval set to %d seconds', logging_interval_minutes)
