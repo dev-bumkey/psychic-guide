@@ -44,14 +44,14 @@ def index():
 
 def loop_function():
     global keep_running
-    randomSec = randint(1, 5)
+    randomSec = randint(1, 10)
     logging_interval_minutes = int(os.getenv('LOGGING_INTERVAL_SECOND', randomSec))
 
     while keep_running:
         app.logger.error('Logging interval set to %d seconds', logging_interval_minutes)
         app.logger.warning('Waiting for %d second(s) before logging again...', logging_interval_minutes)
         time.sleep(logging_interval_minutes)
-        randomSec = randint(1, 10)
+        randomSec = randint(1, 60)
         logging_interval_minutes = int(os.getenv('LOGGING_INTERVAL_SECOND', randomSec))
         app.logger.info('---- Time is TicTok ----')
 
@@ -73,6 +73,6 @@ def roll():
 
 
 if __name__ == '__main__':
-    log = logging.getLogger('werkzeug')
-    log.setLevel(logging.DEBUG)
-    app.run(debug=True)
+    # log = logging.getLogger('werkzeug')
+    # log.setLevel(logging.DEBUG)
+    app.run(debug=False)
