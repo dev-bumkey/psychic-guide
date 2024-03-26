@@ -35,18 +35,15 @@ def index():
     randomSec = randint(5, 30)
     logging_interval_minutes = int(os.getenv('LOGGING_INTERVAL_SECOND', randomSec))
 
-    while randomSec < 30:
-        # 환경 변수에서 로깅 간격(초)을 읽기
+    app.logger.info('Logging interval set to %d seconds', logging_interval_minutes)
 
-        app.logger.info('Logging interval set to %d seconds', logging_interval_minutes)
+    # 주어진 간격(초)마다 로깅을 수행
+    app.logger.info('Waiting for %d second(s) before logging again...', logging_interval_minutes)
+    time.sleep(logging_interval_minutes)
 
-        # 주어진 간격(초)마다 로깅을 수행
-        app.logger.info('Waiting for %d second(s) before logging again...', logging_interval_minutes)
-        time.sleep(logging_interval_minutes)
-
-        randomSec = randint(1, 30)
-        logging_interval_minutes = int(os.getenv('LOGGING_INTERVAL_SECOND', randomSec))
-        app.logger.info('---- Time is TicTok ----')
+    randomSec = randint(1, 30)
+    logging_interval_minutes = int(os.getenv('LOGGING_INTERVAL_SECOND', randomSec))
+    app.logger.info('---- Time is TicTok ----')
     return 'Check the logs!'
 
 
@@ -75,8 +72,4 @@ def roll():
 
 
 if __name__ == '__main__':
-    # 로그를 작성하는 스레드 시작
-    log_thread = threading.Thread(target=index)
-    log_thread.daemon = True
-    log_thread.start()
     app.run(debug=False)
