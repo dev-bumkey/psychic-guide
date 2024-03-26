@@ -1,5 +1,6 @@
 import sys
 import os
+import threading
 import time
 from random import randint
 from flask import Flask, request, redirect
@@ -30,7 +31,7 @@ def index():
     app.logger.info('--- PYTHON APPLICATION START ---')
     app.logger.info('This logging App for Log Service')
 
-    randomSec = randint(1, 59)
+    randomSec = randint(5, 30)
     logging_interval_minutes = int(os.getenv('LOGGING_INTERVAL_SECOND', randomSec))
 
     while randomSec < 60:
@@ -47,21 +48,6 @@ def index():
         app.logger.info('---- Time is TicTok ----')
     return 'Check the logs!'
 
-@app.before_request
-def before_request():
-    from turtledemo.chaos import g
-    if request.path != '/':
-        g.terminate_logging = True  # 다른 라우트로 이동될 때 while 루프를 종료하도록 플래그 설정
-
-@app.after_request
-def after_request(response):
-    from turtledemo.chaos import g
-    if hasattr(g, 'terminate_logging') and g.terminate_logging:
-        app.logger.warning('Exiting the logging loop due to request to a different route or server shutdown')
-        return response
-    else:
-        # while 루프가 종료되지 않은 경우 다시 '/' 라우트로 리다이렉션하여 로깅을 계속합니다.
-        return redirect('/')
 
 @app.teardown_request
 def teardown_request(exception=None):
@@ -88,4 +74,8 @@ def roll():
 
 
 if __name__ == '__main__':
+    # 로그를 작성하는 스레드 시작
+    log_thread = threading.Thread(target=index)
+    log_thread.daemon = True
+    log_thread.start()
     app.run(debug=False)
