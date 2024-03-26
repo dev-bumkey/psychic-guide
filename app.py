@@ -9,6 +9,7 @@ from flask import g
 import logging
 
 app = Flask(__name__)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
