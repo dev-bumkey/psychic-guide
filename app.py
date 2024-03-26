@@ -1,16 +1,13 @@
 import sys
 import os
-import threading
-import time
 from random import randint
 from flask import Flask, request, redirect
-from logging.handlers import RotatingFileHandler
 import logging
+logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
-logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
@@ -34,10 +31,12 @@ def index():
     app.logger.warning('--- PYTHON APPLICATION START ---')
     app.logger.debug('This logging App for Log Service')
 
-    randomSec = randint(1, 5)
-    logging_interval_minutes = int(os.getenv('LOGGING_INTERVAL_SECOND', randomSec))
-    app.logger.warning('Logging interval set to %d seconds', logging_interval_minutes)
-    app.logger.info('---- Time is TicTok ----')
+    randomSec = randint(1, 10)
+    while True:
+        logging_interval_minutes = int(os.getenv('LOGGING_INTERVAL_SECOND', randomSec))
+        app.logger.warning('Logging interval set to %d seconds', logging_interval_minutes)
+        app.logger.info('---- Time is TicTok ----')
+        return 'Check the logs!'
     #
     # while randomSec < 30:
     #     # 환경 변수에서 로깅 간격(초)을 읽기
@@ -51,7 +50,7 @@ def index():
     #     randomSec = randint(1, 30)
     #     logging_interval_minutes = int(os.getenv('LOGGING_INTERVAL_SECOND', randomSec))
     #     app.logger.info('---- Time is TicTok ----')
-    return 'Check the logs!'
+
 
 @app.route("/rolldice")
 def roll_dice():
@@ -70,4 +69,4 @@ def roll():
 
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run()
