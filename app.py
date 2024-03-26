@@ -9,7 +9,6 @@ from flask import g
 import logging
 
 app = Flask(__name__)
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
@@ -18,6 +17,7 @@ console_handler = logging.StreamHandler(sys.stdout)
 console_handler.setLevel(logging.DEBUG)
 console_handler.setFormatter(formatter)
 logger.addHandler(console_handler)
+app.logger.addHandler(console_handler)
 logger.setLevel(logging.DEBUG)
 # # 로그 핸들러 설정
 # file_handler = RotatingFileHandler('/var/log/app.log', maxBytes=1024 * 1024 * 100, backupCount=20)
