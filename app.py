@@ -1,13 +1,12 @@
 import sys
 import os
+import time
 from random import randint
 from flask import Flask, request, redirect
 import logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__)
-log = logging.getLogger('werkzeug')
-log.setLevel(logging.ERROR)
 logger = logging.getLogger(__name__)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
@@ -31,25 +30,22 @@ def index():
     app.logger.warning('--- PYTHON APPLICATION START ---')
     app.logger.debug('This logging App for Log Service')
 
-    randomSec = randint(1, 10)
-    while True:
+    randomSec = randint(1, 5)
+    logging_interval_minutes = int(os.getenv('LOGGING_INTERVAL_SECOND', randomSec))
+
+    while randomSec < 30:
+        # 환경 변수에서 로깅 간격(초)을 읽기
+
+        app.logger.info('Logging interval set to %d seconds', logging_interval_minutes)
+
+        # 주어진 간격(초)마다 로깅을 수행
+        app.logger.info('Waiting for %d second(s) before logging again...', logging_interval_minutes)
+
+        time.sleep(logging_interval_minutes)
+
+        randomSec = randint(1, 10)
         logging_interval_minutes = int(os.getenv('LOGGING_INTERVAL_SECOND', randomSec))
-        app.logger.warning('Logging interval set to %d seconds', logging_interval_minutes)
         app.logger.info('---- Time is TicTok ----')
-        return 'Check the logs!'
-    #
-    # while randomSec < 30:
-    #     # 환경 변수에서 로깅 간격(초)을 읽기
-    #
-    #     app.logger.info('Logging interval set to %d seconds', logging_interval_minutes)
-    #
-    #     # 주어진 간격(초)마다 로깅을 수행
-    #     app.logger.info('Waiting for %d second(s) before logging again...', logging_interval_minutes)
-    #     time.sleep(logging_interval_minutes)
-    #
-    #     randomSec = randint(1, 30)
-    #     logging_interval_minutes = int(os.getenv('LOGGING_INTERVAL_SECOND', randomSec))
-    #     app.logger.info('---- Time is TicTok ----')
 
 
 @app.route("/rolldice")
