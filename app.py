@@ -66,4 +66,5 @@ def roll():
 
 
 if __name__ == '__main__':
-    app.run()
+    logging.basicConfig(level=logging.DEBUG)
+    app.run(debug=True)
