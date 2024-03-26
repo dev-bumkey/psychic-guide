@@ -10,7 +10,7 @@ import logging
 app = Flask(__name__)
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
@@ -31,12 +31,12 @@ app.logger.addHandler(console_handler)
 # 예제 라우트
 @app.route('/')
 def index():
-    app.logger.info('--- PYTHON APPLICATION START ---')
-    app.logger.info('This logging App for Log Service')
+    app.logger.warning('--- PYTHON APPLICATION START ---')
+    app.logger.debug('This logging App for Log Service')
 
     randomSec = randint(1, 5)
     logging_interval_minutes = int(os.getenv('LOGGING_INTERVAL_SECOND', randomSec))
-    app.logger.info('Logging interval set to %d seconds', logging_interval_minutes)
+    app.logger.warning('Logging interval set to %d seconds', logging_interval_minutes)
     app.logger.info('---- Time is TicTok ----')
     #
     # while randomSec < 30:
