@@ -4,7 +4,7 @@ import time
 from random import randint
 from flask import Flask, request, redirect
 import logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 logger = logging.getLogger(__name__)
