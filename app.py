@@ -1,12 +1,12 @@
 import sys
 import os
+import threading
 import time
 from logging.handlers import RotatingFileHandler
 from random import randint
 from flask import Flask, request, redirect
 from flask import g
 import logging
-logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 logger = logging.getLogger(__name__)
@@ -14,60 +14,57 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 
 # 콘솔 핸들러
 console_handler = logging.StreamHandler(sys.stdout)
-# console_handler.setLevel(logging.DEBUG)
+console_handler.setLevel(logging.DEBUG)
 console_handler.setFormatter(formatter)
-app.logger.addHandler(console_handler)
-
-
+logger.addHandler(console_handler)
+logger.setLevel(logging.DEBUG)
 # # 로그 핸들러 설정
 # file_handler = RotatingFileHandler('/var/log/app.log', maxBytes=1024 * 1024 * 100, backupCount=20)
 # file_handler.setLevel(logging.DEBUG)
 # file_handler.setFormatter(formatter)
-# app.logger.addHandler(file_handler)
+# logger.addHandler(file_handler)
 
 
+
+# 백그라운드 스레드와 루프를 컨트롤할 플래그
+keep_running = True
+loop_thread = None
 # 예제 라우트
 @app.route('/')
 def index():
-    app.logger.warning('--- PYTHON APPLICATION START ---')
-    app.logger.debug('This logging App for Log Service')
+    global loop_thread
+    if loop_thread is None or not loop_thread.is_alive():
+        # 루프 스레드가 없거나 종료되었을 때에만 새로운 스레드 시작
+        loop_thread = threading.Thread(target=loop_function)
+        loop_thread.start()
+    logger.warning('--- PYTHON APPLICATION START ---')
+    logger.debug('This logging App for Log Service')
+    return "Loop started"
 
+
+def loop_function():
+    global keep_running
     randomSec = randint(1, 5)
     logging_interval_minutes = int(os.getenv('LOGGING_INTERVAL_SECOND', randomSec))
 
-    while randomSec < 10:
-        # 환경 변수에서 로깅 간격(초)을 읽기
-
+    while keep_running:
         app.logger.info('Logging interval set to %d seconds', logging_interval_minutes)
-
-        # 주어진 간격(초)마다 로깅을 수행
         app.logger.info('Waiting for %d second(s) before logging again...', logging_interval_minutes)
-
         time.sleep(logging_interval_minutes)
-
         randomSec = randint(1, 10)
         logging_interval_minutes = int(os.getenv('LOGGING_INTERVAL_SECOND', randomSec))
         app.logger.info('---- Time is TicTok ----')
 
-        # 다른 라우트로 이동할 때 루프를 탈출하는 조건 설정
-        if should_exit():
-            g.exit_loop = True
-            break
-
-    return "Loop exited"
-
-def should_exit():
-    return False
 
 @app.route("/rolldice")
 def roll_dice():
     player = request.args.get('player', default=None, type=str)
     result = str(roll())
-    app.logger.info('시작')
+    logger.info('시작')
     if player:
-        app.logger.warning("%s is rolling the dice: %s", player, result)
+        logger.warning("%s is rolling the dice: %s", player, result)
     else:
-        app.logger.warning("Anonymous player is rolling the dice: %s", result)
+        logger.warning("Anonymous player is rolling the dice: %s", result)
     return result
 
 
@@ -76,7 +73,6 @@ def roll():
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
     log = logging.getLogger('werkzeug')
-    log.setLevel(logging.ERROR)
+    log.setLevel(logging.DEBUG)
     app.run(debug=True)
