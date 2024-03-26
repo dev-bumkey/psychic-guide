@@ -48,6 +48,17 @@ def index():
         logging_interval_minutes = int(os.getenv('LOGGING_INTERVAL_SECOND', randomSec))
         app.logger.info('---- Time is TicTok ----')
 
+        # 다른 라우트로 이동할 때 루프를 탈출하는 조건 설정
+        if should_exit():
+            break
+
+    return "Loop exited"
+
+def should_exit():
+    # 이 함수에서는 다른 라우트로 이동할 때 루프를 탈출할 조건을 설정합니다.
+    # 예를 들어, 특정 요청 매개변수를 확인하거나, 특정 조건이 충족되었는지 확인할 수 있습니다.
+    # 이 예제에서는 단순히 False를 반환하여 루프가 계속 실행되도록 설정합니다.
+    return False
 
 @app.route("/rolldice")
 def roll_dice():
@@ -67,4 +78,6 @@ def roll():
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
+    log = logging.getLogger('werkzeug')
+    log.setLevel(logging.ERROR)
     app.run(debug=True)
