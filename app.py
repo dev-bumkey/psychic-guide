@@ -4,6 +4,7 @@ import time
 from logging.handlers import RotatingFileHandler
 from random import randint
 from flask import Flask, request, redirect
+from flask import g
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
@@ -19,10 +20,10 @@ app.logger.addHandler(console_handler)
 
 
 # # 로그 핸들러 설정
-file_handler = RotatingFileHandler('/var/log/app.log', maxBytes=1024 * 1024 * 100, backupCount=20)
-file_handler.setLevel(logging.DEBUG)
-file_handler.setFormatter(formatter)
-app.logger.addHandler(file_handler)
+# file_handler = RotatingFileHandler('/var/log/app.log', maxBytes=1024 * 1024 * 100, backupCount=20)
+# file_handler.setLevel(logging.DEBUG)
+# file_handler.setFormatter(formatter)
+# app.logger.addHandler(file_handler)
 
 
 # 예제 라우트
@@ -34,7 +35,7 @@ def index():
     randomSec = randint(1, 5)
     logging_interval_minutes = int(os.getenv('LOGGING_INTERVAL_SECOND', randomSec))
 
-    while randomSec < 30:
+    while randomSec < 10:
         # 환경 변수에서 로깅 간격(초)을 읽기
 
         app.logger.info('Logging interval set to %d seconds', logging_interval_minutes)
@@ -50,14 +51,12 @@ def index():
 
         # 다른 라우트로 이동할 때 루프를 탈출하는 조건 설정
         if should_exit():
+            g.exit_loop = True
             break
 
     return "Loop exited"
 
 def should_exit():
-    # 이 함수에서는 다른 라우트로 이동할 때 루프를 탈출할 조건을 설정합니다.
-    # 예를 들어, 특정 요청 매개변수를 확인하거나, 특정 조건이 충족되었는지 확인할 수 있습니다.
-    # 이 예제에서는 단순히 False를 반환하여 루프가 계속 실행되도록 설정합니다.
     return False
 
 @app.route("/rolldice")
