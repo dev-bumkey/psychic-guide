@@ -2,7 +2,7 @@ import sys
 import os
 import time
 from random import randint
-from flask import Flask, request
+from flask import Flask, request, redirect
 from logging.handlers import RotatingFileHandler
 import logging
 
@@ -36,15 +36,39 @@ def index():
     while randomSec < 60:
         # 환경 변수에서 로깅 간격(초)을 읽기
 
-        app.logger.warn('Logging interval set to %d seconds', logging_interval_minutes)
+        app.logger.warning('Logging interval set to %d seconds', logging_interval_minutes)
 
         # 주어진 간격(초)마다 로깅을 수행
-        app.logger.warn('Waiting for %d second(s) before logging again...', logging_interval_minutes)
+        app.logger.info('Waiting for %d second(s) before logging again...', logging_interval_minutes)
         time.sleep(logging_interval_minutes)
 
         randomSec = randint(1, 30)
         logging_interval_minutes = int(os.getenv('LOGGING_INTERVAL_SECOND', randomSec))
         app.logger.info('---- Time is TicTok ----')
+    return 'Check the logs!'
+
+@app.before_request
+def before_request():
+    from turtledemo.chaos import g
+    if request.path != '/':
+        g.terminate_logging = True  # 다른 라우트로 이동될 때 while 루프를 종료하도록 플래그 설정
+
+@app.after_request
+def after_request(response):
+    from turtledemo.chaos import g
+    if hasattr(g, 'terminate_logging') and g.terminate_logging:
+        app.logger.warning('Exiting the logging loop due to request to a different route or server shutdown')
+        return response
+    else:
+        # while 루프가 종료되지 않은 경우 다시 '/' 라우트로 리다이렉션하여 로깅을 계속합니다.
+        return redirect('/')
+
+@app.teardown_request
+def teardown_request(exception=None):
+    if exception:
+        logger.error('An error occurred during request processing: %s', exception)
+    else:
+        logger.info('Request processed successfully')
 
 
 @app.route("/rolldice")
