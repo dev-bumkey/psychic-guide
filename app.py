@@ -47,7 +47,6 @@ def index():
     return 'Check the logs!'
 
 
-
 @app.route("/rolldice")
 def roll_dice():
     player = request.args.get('player', default=None, type=str)
