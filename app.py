@@ -37,7 +37,7 @@ def index():
     while randomSec < 60:
         # 환경 변수에서 로깅 간격(초)을 읽기
 
-        app.logger.warning('Logging interval set to %d seconds', logging_interval_minutes)
+        app.logger.info('Logging interval set to %d seconds', logging_interval_minutes)
 
         # 주어진 간격(초)마다 로깅을 수행
         app.logger.info('Waiting for %d second(s) before logging again...', logging_interval_minutes)
