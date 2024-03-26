@@ -74,8 +74,4 @@ def roll():
 
 
 if __name__ == '__main__':
-    # 로그를 작성하는 스레드 시작
-    log_thread = threading.Thread(target=index)
-    log_thread.daemon = True
-    log_thread.start()
     app.run(debug=False)
