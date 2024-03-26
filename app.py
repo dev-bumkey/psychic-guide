@@ -47,13 +47,6 @@ def index():
     return 'Check the logs!'
 
 
-@app.teardown_request
-def teardown_request(exception=None):
-    if exception:
-        logger.error('An error occurred during request processing: %s', exception)
-    else:
-        logger.info('Request processed successfully')
-
 
 @app.route("/rolldice")
 def roll_dice():
