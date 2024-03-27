@@ -49,12 +49,12 @@ def loop_function():
     logging_interval_minutes = int(os.getenv('LOGGING_INTERVAL_SECOND', randomSec))
 
     while keep_running:
-        app.logger.error('Logging interval set to %d seconds', logging_interval_minutes)
-        app.logger.warning('Waiting for %d second(s) before logging again...', logging_interval_minutes)
+        logger.error('Logging interval set to %d seconds', logging_interval_minutes)
+        logger.warning('Waiting for %d second(s) before logging again...', logging_interval_minutes)
         time.sleep(logging_interval_minutes)
         randomSec = randint(1, 60)
         logging_interval_minutes = int(os.getenv('LOGGING_INTERVAL_SECOND', randomSec))
-        app.logger.info('---- Time is TicTok ----')
+        logger.info('---- Time is TicTok ----')
 
 
 @app.route("/rolldice")
