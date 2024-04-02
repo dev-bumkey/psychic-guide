@@ -19,12 +19,12 @@ console_handler.setFormatter(formatter)
 logger.addHandler(console_handler)
 app.logger.addHandler(console_handler)
 logger.setLevel(logging.DEBUG)
-# # 로그 핸들러 설정
-# file_handler = RotatingFileHandler('/var/log/app.log', maxBytes=1024 * 1024 * 100, backupCount=20)
-# file_handler.setLevel(logging.DEBUG)
-# file_handler.setFormatter(formatter)
-# logger.addHandler(file_handler)
 
+# 로그 핸들러 설정
+file_handler = RotatingFileHandler('/var/log/app.log', maxBytes=1024 * 1024 * 100, backupCount=20)
+file_handler.setLevel(logging.DEBUG)
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
 
 
 # 백그라운드 스레드와 루프를 컨트롤할 플래그
