@@ -10,16 +10,16 @@ from fastapi.responses import PlainTextResponse
 import uvicorn
 
 app = FastAPI()
-logger = logging.getLogger(__name__)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-formatter1 = logging.Formatter('Stream :  "%(asctime)s - %(levelname)s - %(message)s')
-
-# 콘솔 핸들러
-console_handler = logging.StreamHandler(sys.stdout)
-console_handler.setLevel(logging.DEBUG)
-console_handler.setFormatter(formatter)
-logger.addHandler(console_handler)
-logger.setLevel(logging.DEBUG)
+# logger = logging.getLogger(__name__)
+# formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+# formatter1 = logging.Formatter('Stream :  "%(asctime)s - %(levelname)s - %(message)s')
+#
+# # 콘솔 핸들러
+# console_handler = logging.StreamHandler(sys.stdout)
+# console_handler.setLevel(logging.DEBUG)
+# console_handler.setFormatter(formatter)
+# logger.addHandler(console_handler)
+# logger.setLevel(logging.DEBUG)
 
 # 스트림 핸들러 (Uvicorn 액세스 로거용)
 # stream_handler = logging.StreamHandler(sys.stdout)
@@ -33,6 +33,34 @@ logger.setLevel(logging.DEBUG)
 # 백그라운드 스레드와 루프를 컨트롤할 플래그
 keep_running = True
 loop_thread = None
+
+def get_logging():
+    # Create Logger
+    logger = logging.getLogger()
+    level = "INFO"
+
+    # Check handler exists
+    if len(logger.handlers) > 0:
+        # Logger already exists
+        return logger
+
+    # Set Logger Level
+    logger.setLevel(level)
+
+    # Set Logger Format
+    formatter = logging.Formatter("%(levelname)s %(asctime)s [%(filename)s > %(funcName)s function > %(lineno)d line] - %(message)s")
+
+    # Create Handlers
+    stream_handler = logging.StreamHandler()
+    stream_handler.setLevel(level)
+    stream_handler.setFormatter(formatter)
+
+    # Set Handlers to Logger
+    logger.addHandler(stream_handler)
+
+    return logger
+
+logger = get_logging()
 
 @app.get("/")
 async def index():
