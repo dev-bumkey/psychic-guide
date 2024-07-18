@@ -22,12 +22,13 @@ logger.addHandler(console_handler)
 logger.setLevel(logging.DEBUG)
 
 # 스트림 핸들러 (Uvicorn 액세스 로거용)
-stream_handler = logging.StreamHandler(sys.stdout)
-stream_handler.setLevel(logging.DEBUG)
-stream_handler.setFormatter(formatter1)
-uvicorn_access_logger = logging.getLogger("uvicorn.access")
-uvicorn_access_logger.addHandler(stream_handler)
-uvicorn_access_logger.setLevel(logging.DEBUG)
+# stream_handler = logging.StreamHandler(sys.stdout)
+# stream_handler.setLevel(logging.DEBUG)
+# stream_handler.setFormatter(formatter1)
+
+# uvicorn_access_logger = logging.getLogger("uvicorn.access")
+# uvicorn_access_logger.addHandler(stream_handler)
+# uvicorn_access_logger.setLevel(logging.DEBUG)
 
 # 백그라운드 스레드와 루프를 컨트롤할 플래그
 keep_running = True
