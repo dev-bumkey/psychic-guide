@@ -12,7 +12,7 @@ import uvicorn
 app = FastAPI()
 logger = logging.getLogger(__name__)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-formatter1 = logging.Formatter('Stream :  %(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter1 = logging.Formatter('Stream :  "%(asctime)s - %(levelname)s - %(message)s')
 
 # 콘솔 핸들러
 console_handler = logging.StreamHandler(sys.stdout)
@@ -21,15 +21,13 @@ console_handler.setFormatter(formatter)
 logger.addHandler(console_handler)
 logger.setLevel(logging.DEBUG)
 
-
-# 스트림 핸들러
-stream_handler = logging.StreamHandler()
+# 스트림 핸들러 (Uvicorn 액세스 로거용)
+stream_handler = logging.StreamHandler(sys.stdout)
 stream_handler.setLevel(logging.DEBUG)
 stream_handler.setFormatter(formatter1)
-logger.addHandler(stream_handler)
-logger.setLevel(logging.DEBUG)
-
-
+uvicorn_access_logger = logging.getLogger("uvicorn.access")
+uvicorn_access_logger.addHandler(stream_handler)
+uvicorn_access_logger.setLevel(logging.DEBUG)
 
 # 백그라운드 스레드와 루프를 컨트롤할 플래그
 keep_running = True
@@ -74,6 +72,4 @@ def roll():
     return randint(1, 6)
 
 if __name__ == '__main__':
-    # log = logging.getLogger('werkzeug')
-    # log.setLevel(logging.DEBUG)
     uvicorn.run(app, host="0.0.0.0", port=8000, log_level="debug")
